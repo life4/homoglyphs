@@ -24,12 +24,14 @@ STRATEGY_REMOVE = 3     # remove char from result
 
 
 class Homoglyphs(object):
-    def __init__(self, categories=('LATIN', 'COMMON'), strategy=STRATEGY_IGNORE, alphabet=None):
+    def __init__(self, categories=('LATIN', 'COMMON'), alphabet=None,
+                 strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
         # cats
         self.categories = set(categories or [])
         if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
             raise ValueError('Invalid strategy')
         self.strategy = strategy
+        self.ascii_strategy = ascii_strategy
 
         # alphabet
         self.alphabet = set(alphabet or [])
@@ -80,6 +82,12 @@ class Homoglyphs(object):
             if point[0] <= code <= point[1]:
                 return data['iso_15924_aliases'][point[2]]
 
+    @staticmethod
+    def uniq_and_sort(data):
+        result = list(set(data))
+        result.sort(key=lambda x: (-len(x), x))
+        return result
+
     def _get_char_variants(self, char):
         if char not in self.alphabet:
             if self.strategy == STRATEGY_LOAD:
@@ -104,9 +112,11 @@ class Homoglyphs(object):
         # add current char to alternatives
         alt_chars.append(char)
 
-        # uniq, sort and add to variations
-        alt_chars = sorted(list(set(alt_chars)))
-        return alt_chars
+        if self.ascii_strategy == STRATEGY_REMOVE:
+            alt_chars = [char for char in alt_chars if ord(char) < 256]
+
+        # uniq, sort and return
+        return self.uniq_and_sort(alt_chars)
 
     def _get_combinations(self, text):
         variations = []
@@ -126,4 +136,4 @@ class Homoglyphs(object):
                 yield variant
 
     def to_ascii(self, text):
-        return list(self._to_ascii(text))
+        return self.uniq_and_sort(self._to_ascii(text))
