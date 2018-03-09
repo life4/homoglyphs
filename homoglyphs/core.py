@@ -7,13 +7,28 @@ import os
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Actions if char not in alphabet
+STRATEGY_LOAD = 1       # load category for this char
+STRATEGY_IGNORE = 2     # add char to result
+STRATEGY_REMOVE = 3     # remove char from result
+
 
 class Homoglyphs(object):
-    def __init__(self, categories):
-        alphabet = self.get_alphabet(categories)
-        self.table = self.get_table(alphabet)
+    def __init__(self, categories=('LATIN', 'COMMON'), strategy=STRATEGY_IGNORE, alphabet=None):
+        # cats
+        self.categories = set(categories or [])
+        if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
+            raise ValueError('Invalid strategy')
+        self.strategy = strategy
 
-    def get_ranges(self, categories):
+        # alphabet
+        self.alphabet = set(alphabet or [])
+        if self.categories:
+            self.alphabet.update(self.get_alphabet(categories))
+        self.table = self.get_table(self.alphabet)
+
+    @staticmethod
+    def get_ranges(categories):
         with open(os.path.join(CURRENT_DIR, 'categories.json')) as f:
             data = json.load(f)
         indexes = []
@@ -26,14 +41,16 @@ class Homoglyphs(object):
             if point[2] in indexes:
                 yield point[:2]
 
-    def get_alphabet(self, categories):
+    @classmethod
+    def get_alphabet(cls, categories):
         chars = []
-        ranges = list(self.get_ranges(categories))
+        ranges = list(cls.get_ranges(categories))
         for start, end in ranges:
             chars.extend(chr(code) for code in range(start, end))
-        return ''.join(chars)
+        return set(chars)
 
-    def get_table(self, alphabet):
+    @staticmethod
+    def get_table(alphabet):
         table = defaultdict(list)
         with open(os.path.join(CURRENT_DIR, 'confusables.json')) as f:
             data = json.load(f)
@@ -44,22 +61,49 @@ class Homoglyphs(object):
                         table[char].append(homoglyph['c'])
         return table
 
-    def _get_combinations(self, text):
-        variations = []
-        for char in text:
-            # find alternative chars for current char
-            alt_chars = self.table.get(char, [])
+    @staticmethod
+    def detect_category(char):
+        with open(os.path.join(CURRENT_DIR, 'categories.json')) as f:
+            data = json.load(f)
+        code = ord(char)
+        for point in data['code_points_ranges']:
+            if point[0] <= code <= point[1]:
+                return data['iso_15924_aliases'][point[2]]
+
+    def _get_char_variants(self, char):
+        if char not in self.alphabet:
+            if self.strategy == STRATEGY_LOAD:
+                category = self.detect_category(char)
+                if category is None:
+                    return []
+                self.categories.add(category)
+                self.alphabet.update(self.get_alphabet(self.categories))
+                self.table = self.get_table(self.alphabet)
+            elif self.strategy == STRATEGY_IGNORE:
+                return [char]
+            elif self.strategy == STRATEGY_REMOVE:
+                return []
+
+        # find alternative chars for current char
+        alt_chars = self.table.get(char, [])
+        if alt_chars:
             # find alternative chars for alternative chars for current char
             alt_chars2 = [self.table.get(alt_char, []) for alt_char in alt_chars]
             # combine all alternatives
             alt_chars.extend(sum(alt_chars2, []))
-            # add current char to alternatives
-            alt_chars.append(char)
+        # add current char to alternatives
+        alt_chars.append(char)
 
-            # uniq, sort and add to variations
-            alt_chars = sorted(list(set(alt_chars)))
-            variations.append(alt_chars)
+        # uniq, sort and add to variations
+        alt_chars = sorted(list(set(alt_chars)))
+        return alt_chars
 
+    def _get_combinations(self, text):
+        variations = []
+        for char in text:
+            alt_chars = self._get_char_variants(char)
+            if alt_chars:
+                variations.append(alt_chars)
         for variant in product(*variations):
             yield ''.join(variant)
 
