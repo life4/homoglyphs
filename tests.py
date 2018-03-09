@@ -77,6 +77,12 @@ class TestCommon(unittest.TestCase):
 
         ss = Homoglyphs(
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
+            ascii_strategy=STRATEGY_IGNORE,
+        ).to_ascii(u'xхч2')
+        self.assertEqual(ss, [])
+
+        ss = Homoglyphs(
+            categories=('LATIN', 'COMMON', 'CYRILLIC'),
             ascii_strategy=STRATEGY_REMOVE,
         ).to_ascii(u'xхч2')
         self.assertEqual(ss, ['xx2'])
