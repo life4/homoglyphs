@@ -4,6 +4,16 @@ import json
 from itertools import product
 import os
 
+try:
+    xrange
+except NameError:
+    # python3
+    pass
+else:
+    # python2
+    range = xrange  # noQA
+    chr = unichr    # noQA
+
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
