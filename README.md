@@ -1,6 +1,6 @@
-# Homoglyph
+# Homoglyphs
 
-Homoglyph -- python library for getting [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) and converting to ASCII.
+Homoglyphs -- python library for getting [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) and converting to ASCII.
 
 
 ## Features
@@ -12,6 +12,13 @@ It's like [confusable_homoglyphs](https://github.com/vhf/confusable_homoglyphs) 
 * Converting to ASCII.
 * More configurable.
 * More stable.
+
+
+## Installation
+
+```
+sudo pip install homoglyphs
+```
 
 
 ## Usage
