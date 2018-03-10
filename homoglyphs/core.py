@@ -23,25 +23,20 @@ STRATEGY_IGNORE = 2     # add char to result
 STRATEGY_REMOVE = 3     # remove char from result
 
 
-class Homoglyphs(object):
-    def __init__(self, categories=('LATIN', 'COMMON'), alphabet=None,
-                 strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
-        # cats
-        self.categories = set(categories or [])
-        if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
-            raise ValueError('Invalid strategy')
-        self.strategy = strategy
-        self.ascii_strategy = ascii_strategy
+class Categories(object):
+    """
+    Work with aliases from ISO 15924.
+    https://en.wikipedia.org/wiki/ISO_15924#List_of_codes
+    """
+    fpath = os.path.join(CURRENT_DIR, 'categories.json')
 
-        # alphabet
-        self.alphabet = set(alphabet or [])
-        if self.categories:
-            self.alphabet.update(self.get_alphabet(categories))
-        self.table = self.get_table(self.alphabet)
-
-    @staticmethod
-    def get_ranges(categories):
-        with open(os.path.join(CURRENT_DIR, 'categories.json')) as f:
+    @classmethod
+    def _get_ranges(cls, categories):
+        """
+        :return: iter: (start code, end code)
+        :rtype: list
+        """
+        with open(cls.fpath) as f:
             data = json.load(f)
         indexes = []
         for category in categories:
@@ -55,11 +50,48 @@ class Homoglyphs(object):
 
     @classmethod
     def get_alphabet(cls, categories):
-        chars = []
-        ranges = list(cls.get_ranges(categories))
-        for start, end in ranges:
-            chars.extend(chr(code) for code in range(start, end))
-        return set(chars)
+        """
+        :return: set of chars in alphabet by categories list
+        :rtype: set
+        """
+        alphabet = set()
+        for start, end in cls._get_ranges(categories):
+            chars = (chr(code) for code in range(start, end))
+            alphabet.update(set(chars))
+        return set(alphabet)
+
+    @classmethod
+    def detect(cls, char):
+        """
+        :return: category
+        :rtype: str
+        """
+        with open(cls.fpath) as f:
+            data = json.load(f)
+        code = ord(char)
+        for point in data['code_points_ranges']:
+            if point[0] <= code <= point[1]:
+                return data['iso_15924_aliases'][point[2]]
+
+
+class Homoglyphs(object):
+    def __init__(self, categories=('LATIN', 'COMMON'), languages=None, alphabet=None,
+                 strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
+        # strategies
+        if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
+            raise ValueError('Invalid strategy')
+        self.strategy = strategy
+        self.ascii_strategy = ascii_strategy
+
+        # cats and langs
+        self.categories = set(categories or [])
+
+        # alphabet
+        self.alphabet = set(alphabet or [])
+        if self.categories:
+            alphabet = Categories.get_alphabet(self.categories)
+            self.alphabet.update(alphabet)
+        self.table = self.get_table(self.alphabet)
 
     @staticmethod
     def get_table(alphabet):
@@ -74,29 +106,28 @@ class Homoglyphs(object):
         return table
 
     @staticmethod
-    def detect_category(char):
-        with open(os.path.join(CURRENT_DIR, 'categories.json')) as f:
-            data = json.load(f)
-        code = ord(char)
-        for point in data['code_points_ranges']:
-            if point[0] <= code <= point[1]:
-                return data['iso_15924_aliases'][point[2]]
-
-    @staticmethod
     def uniq_and_sort(data):
         result = list(set(data))
         result.sort(key=lambda x: (-len(x), x))
         return result
 
+    def _update_alphabet(self, char):
+        # try detect categories
+        category = Categories.detect(char)
+        if category is None:
+            return False
+        self.categories.add(category)
+        alphabet = Categories.get_alphabet([category])
+        self.alphabet.update(alphabet)
+        # update table for new alphabet
+        self.table = self.get_table(self.alphabet)
+        return True
+
     def _get_char_variants(self, char):
         if char not in self.alphabet:
             if self.strategy == STRATEGY_LOAD:
-                category = self.detect_category(char)
-                if category is None:
+                if not self._update_alphabet(char):
                     return []
-                self.categories.add(category)
-                self.alphabet.update(self.get_alphabet(self.categories))
-                self.table = self.get_table(self.alphabet)
             elif self.strategy == STRATEGY_IGNORE:
                 return [char]
             elif self.strategy == STRATEGY_REMOVE:

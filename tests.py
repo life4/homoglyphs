@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
-from homoglyphs import Homoglyphs, STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE
+from homoglyphs import (
+    Categories, Homoglyphs,
+    STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE
+)
 
 
 CIRILLIC_ES = u'с'
@@ -9,19 +12,19 @@ CIRILLIC_HE = u'х'
 
 class TestCommon(unittest.TestCase):
     def test_detect_category(self):
-        self.assertEqual(Homoglyphs.detect_category('d'), 'LATIN')
-        self.assertEqual(Homoglyphs.detect_category(u'Д'), 'CYRILLIC')
-        self.assertEqual(Homoglyphs.detect_category('?'), 'COMMON')
+        self.assertEqual(Categories.detect('d'), 'LATIN')
+        self.assertEqual(Categories.detect(u'Д'), 'CYRILLIC')
+        self.assertEqual(Categories.detect('?'), 'COMMON')
 
     def test_get_alphabet(self):
-        alphabet = Homoglyphs.get_alphabet(['LATIN'])
+        alphabet = Categories.get_alphabet(['LATIN'])
         self.assertIn('s', alphabet)
         self.assertIn('S', alphabet)
         self.assertNotIn(u'ё', alphabet)
         self.assertGreater(len(alphabet), 50)
         self.assertLess(len(alphabet), 1400)
 
-        alphabet = Homoglyphs.get_alphabet(['CYRILLIC'])
+        alphabet = Categories.get_alphabet(['CYRILLIC'])
         self.assertIn(u'ё', alphabet)
         self.assertIn(u'Ё', alphabet)
         self.assertNotIn('s', alphabet)
@@ -29,7 +32,7 @@ class TestCommon(unittest.TestCase):
         self.assertLess(len(alphabet), 500)
 
     def test_get_table(self):
-        alphabet = Homoglyphs.get_alphabet(['LATIN'])
+        alphabet = Categories.get_alphabet(['LATIN'])
         table = Homoglyphs.get_table(alphabet)
         self.assertIn('s', table)
         self.assertNotIn(CIRILLIC_ES, table)
