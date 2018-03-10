@@ -3,6 +3,7 @@ from collections import defaultdict
 import json
 from itertools import product
 import os
+import unicodedata
 
 try:
     xrange
@@ -68,6 +69,18 @@ class Categories(object):
         """
         with open(cls.fpath) as f:
             data = json.load(f)
+
+        # try detect category by unicodedata
+        try:
+            category = unicodedata.name(char).split()[0]
+        except TypeError:
+            # In Python2 unicodedata.name raise error for non-unicode chars
+            pass
+        else:
+            if category in data['iso_15924_aliases']:
+                return category
+
+        # try detect category by ranges from JSON file.
         code = ord(char)
         for point in data['code_points_ranges']:
             if point[0] <= code <= point[1]:
