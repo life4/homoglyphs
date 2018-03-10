@@ -96,7 +96,7 @@ homoglyphs.get_combinations('гы')
 # ['rы', 'гы']
 ```
 
-Converting glyphs to ASCII chars:
+### Converting glyphs to ASCII chars
 
 ```python
 homoglyphs = hg.Homoglyphs(categories=None, languages={'en'}, strategy=hg.STRATEGY_LOAD)
