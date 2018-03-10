@@ -15,46 +15,120 @@ but with some features:
 -  Load only needed alphabet to memory.
 -  Work as quick as possible.
 -  Converting to ASCII.
+-  Language management (detect language, get alphabet for language).
+-  Alphabet categories management (detect category, get alphabet for
+   category).
 -  More configurable.
 -  More stable.
+
+Installation
+------------
+
+::
+
+    sudo pip install homoglyphs
 
 Usage
 -----
 
+Importing:
+
 .. code:: python
 
-    from homoglyphs import Homoglyphs, STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE
+    import homoglyphs as hg
 
-    # detect category
-    Homoglyphs.detect_category('s')
+Languages
+~~~~~~~~~
+
+.. code:: python
+
+    #detect
+    hg.Languages.detect('w')
+    # {'pl', 'da', 'nl', 'fi', 'cz', 'sr', 'pt', 'it', 'en', 'es', 'sk', 'de', 'fr', 'ro'}
+    hg.Languages.detect('т')
+    # {'mk', 'ru', 'be', 'bg', 'sr'}
+    hg.Languages.detect('.')
+    # set()
+
+    # get alphabet for languages
+    hg.Languages.get_alphabet(['ru'])
+    # {'в', 'Ё', 'К', 'Т', ..., 'Р', 'З', 'Э'}
+
+Categories
+~~~~~~~~~~
+
+Categories -- (`aliases from ISO
+15924 <https://en.wikipedia.org/wiki/ISO_15924#List_of_codes>`__).
+
+.. code:: python
+
+    #detect
+    hg.Categories.detect('w')
     # 'LATIN'
-    Homoglyphs.detect_category('ё')
+    hg.Categories.detect('т')
     # 'CYRILLIC'
-    Homoglyphs.detect_category('.')
+    hg.Categories.detect('.')
     # 'COMMON'
 
+    # get alphabet for categories
+    hg.Categories.get_alphabet(['CYRILLIC'])
+    # {'ӗ', 'Ԍ', 'Ґ', 'Я', ..., 'Э', 'ԕ', 'ӻ'}
+
+Homoglyphs
+~~~~~~~~~~
+
+Get homoglyphs:
+
+.. code:: python
+
     # get latin combinations (by default initiated only latin alphabet)
-    Homoglyphs().get_combinations('q')
+    hg.Homoglyphs().get_combinations('q')
     # ['q', '𝐪', '𝑞', '𝒒', '𝓆', '𝓺', '𝔮', '𝕢', '𝖖', '𝗊', '𝗾', '𝘲', '𝙦', '𝚚']
 
+Alphabet loading:
+
+.. code:: python
+
     # load alphabet on init by categories
-    Homoglyphs(categories=('LATIN', 'COMMON', 'CYRILLIC')).get_combinations('гы')
+    homoglyphs = hg.Homoglyphs(categories=('LATIN', 'COMMON', 'CYRILLIC'))  # alphabet will be loaded here
+    homoglyphs.get_combinations('гы')
     # ['rы', 'гы', 'ꭇы', 'ꭈы', '𝐫ы', '𝑟ы', '𝒓ы', '𝓇ы', '𝓻ы', '𝔯ы', '𝕣ы', '𝖗ы', '𝗋ы', '𝗿ы', '𝘳ы', '𝙧ы', '𝚛ы']
+
+    # load alphabet on init by languages
+    homoglyphs = hg.Homoglyphs(categories=None, languages={'ru', 'en'})  # alphabet will be loaded here
+    homoglyphs.get_combinations('гы')
+    # ['rы', 'гы']
 
     # load alphabet by demand
-    Homoglyphs(strategy=STRATEGY_LOAD).get_combinations('гы')
-    # ['rы', 'гы', 'ꭇы', 'ꭈы', '𝐫ы', '𝑟ы', '𝒓ы', '𝓇ы', '𝓻ы', '𝔯ы', '𝕣ы', '𝖗ы', '𝗋ы', '𝗿ы', '𝘳ы', '𝙧ы', '𝚛ы']
+    homoglyphs = hg.Homoglyphs(categories=None, languages={'en'}, strategy=hg.STRATEGY_LOAD)
+    # ^ alphabet will be loaded here for "en" language
+    homoglyphs.get_combinations('гы')
+    # ^ alphabet will be loaded here for "ru" language
+    # ['rы', 'гы']
 
-    # convert to ASCII
-    Homoglyphs(strategy=STRATEGY_LOAD).to_ascii('тест')
+Converting glyphs to ASCII chars
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: python
+
+    homoglyphs = hg.Homoglyphs(categories=None, languages={'en'}, strategy=hg.STRATEGY_LOAD)
+
+    # convert
+    homoglyphs.to_ascii('тест')
     # ['tect']
-    Homoglyphs(strategy=STRATEGY_LOAD).to_ascii('ХР123.')  # this is cyrillic "х" and "р"
+    homoglyphs.to_ascii('ХР123.')  # this is cyrillic "х" and "р"
     # ['XP123.', 'XPI23.', 'XPl23.']
 
     # string with chars which can't be converted by default will be ignored
-    Homoglyphs(strategy=STRATEGY_LOAD).to_ascii('лол')
+    homoglyphs.to_ascii('лол')
     # []
 
     # you can set strategy for removing not converted non-ASCII chars from result
-    Homoglyphs(strategy=STRATEGY_LOAD, ascii_strategy=STRATEGY_REMOVE).to_ascii('лол')
+    homoglyphs = hg.Homoglyphs(
+        categories=None,
+        languages={'en'},
+        strategy=hg.STRATEGY_LOAD,
+        ascii_strategy=hg.STRATEGY_REMOVE,
+    )
+    homoglyphs.to_ascii('лол')
     # ['o']
