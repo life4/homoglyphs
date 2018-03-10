@@ -74,6 +74,39 @@ class Categories(object):
                 return data['iso_15924_aliases'][point[2]]
 
 
+class Languages(object):
+    fpath = os.path.join(CURRENT_DIR, 'languages.json')
+
+    @classmethod
+    def get_alphabet(cls, languages):
+        """
+        :return: set of chars in alphabet by languages list
+        :rtype: set
+        """
+        with open(cls.fpath) as f:
+            data = json.load(f)
+        alphabet = set()
+        for lang in languages:
+            if lang not in data:
+                raise ValueError('Invalid language code: {}'.format(lang))
+            alphabet.update(data[lang])
+        return alphabet
+
+    @classmethod
+    def detect(cls, char):
+        """
+        :return: set of languages which alphabet contains passed char.
+        :rtype: set
+        """
+        with open(cls.fpath) as f:
+            data = json.load(f)
+        languages = set()
+        for lang, alphabet in data.items():
+            if char in alphabet:
+                languages.add(lang)
+        return languages
+
+
 class Homoglyphs(object):
     def __init__(self, categories=('LATIN', 'COMMON'), languages=None, alphabet=None,
                  strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
@@ -85,11 +118,15 @@ class Homoglyphs(object):
 
         # cats and langs
         self.categories = set(categories or [])
+        self.languages = set(languages or [])
 
         # alphabet
         self.alphabet = set(alphabet or [])
         if self.categories:
             alphabet = Categories.get_alphabet(self.categories)
+            self.alphabet.update(alphabet)
+        if self.languages:
+            alphabet = Languages.get_alphabet(self.languages)
             self.alphabet.update(alphabet)
         self.table = self.get_table(self.alphabet)
 
@@ -112,13 +149,20 @@ class Homoglyphs(object):
         return result
 
     def _update_alphabet(self, char):
-        # try detect categories
-        category = Categories.detect(char)
-        if category is None:
-            return False
-        self.categories.add(category)
-        alphabet = Categories.get_alphabet([category])
-        self.alphabet.update(alphabet)
+        # try detect languages
+        langs = Languages.detect(char)
+        if langs:
+            self.languages.update(langs)
+            alphabet = Languages.get_alphabet(langs)
+            self.alphabet.update(alphabet)
+        else:
+            # try detect categories
+            category = Categories.detect(char)
+            if category is None:
+                return False
+            self.categories.add(category)
+            alphabet = Categories.get_alphabet([category])
+            self.alphabet.update(alphabet)
         # update table for new alphabet
         self.table = self.get_table(self.alphabet)
         return True

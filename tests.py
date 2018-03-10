@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from homoglyphs import (
-    Categories, Homoglyphs,
+    Categories, Languages, Homoglyphs,
     STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE
 )
 
