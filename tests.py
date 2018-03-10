@@ -16,6 +16,11 @@ class TestCommon(unittest.TestCase):
         self.assertEqual(Categories.detect(u'Д'), 'CYRILLIC')
         self.assertEqual(Categories.detect('?'), 'COMMON')
 
+    def test_detect_language(self):
+        self.assertIn('en', Languages.detect('d'))
+        self.assertIn('ru', Languages.detect(u'Д'))
+        self.assertEqual(Languages.detect('?'), set())
+
     def test_get_alphabet(self):
         alphabet = Categories.get_alphabet(['LATIN'])
         self.assertIn('s', alphabet)
