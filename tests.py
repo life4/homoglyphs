@@ -21,7 +21,7 @@ class TestCommon(unittest.TestCase):
         self.assertIn('ru', Languages.detect(u'Д'))
         self.assertEqual(Languages.detect('?'), set())
 
-    def test_get_alphabet(self):
+    def test_get_alphabet_cat(self):
         alphabet = Categories.get_alphabet(['LATIN'])
         self.assertIn('s', alphabet)
         self.assertIn('S', alphabet)
@@ -35,6 +35,19 @@ class TestCommon(unittest.TestCase):
         self.assertNotIn('s', alphabet)
         self.assertGreater(len(alphabet), 50)
         self.assertLess(len(alphabet), 500)
+
+    def test_get_alphabet_lang(self):
+        alphabet = Languages.get_alphabet({'en'})
+        self.assertIn('s', alphabet)
+        self.assertIn('S', alphabet)
+        self.assertNotIn(u'ё', alphabet)
+        self.assertEqual(len(alphabet), 26 * 2)
+
+        alphabet = Languages.get_alphabet({'ru'})
+        self.assertIn(u'ё', alphabet)
+        self.assertIn(u'Ё', alphabet)
+        self.assertNotIn('s', alphabet)
+        self.assertEqual(len(alphabet), 33 * 2)
 
     def test_get_table(self):
         alphabet = Categories.get_alphabet(['LATIN'])
