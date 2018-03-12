@@ -88,6 +88,11 @@ homoglyphs = hg.Homoglyphs(languages={'ru', 'en'})  # alphabet will be loaded he
 homoglyphs.get_combinations('гы')
 # ['rы', 'гы']
 
+# manual set alphabet on init      # eng rus
+homoglyphs = hg.Homoglyphs(alphabet='abc абс')
+homoglyphs.get_combinations('с')
+# ['c', 'с']
+
 # load alphabet by demand
 homoglyphs = hg.Homoglyphs(languages={'en'}, strategy=hg.STRATEGY_LOAD)
 # ^ alphabet will be loaded here for "en" language
@@ -95,6 +100,9 @@ homoglyphs.get_combinations('гы')
 # ^ alphabet will be loaded here for "ru" language
 # ['rы', 'гы']
 ```
+
+You can combine `categories`, `languages`, `alphabet` and any strategies as you want.
+
 
 ### Converting glyphs to ASCII chars
 
