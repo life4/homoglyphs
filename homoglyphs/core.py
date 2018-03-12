@@ -121,13 +121,17 @@ class Languages(object):
 
 
 class Homoglyphs(object):
-    def __init__(self, categories=('LATIN', 'COMMON'), languages=None, alphabet=None,
+    def __init__(self, categories=None, languages=None, alphabet=None,
                  strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
         # strategies
         if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
             raise ValueError('Invalid strategy')
         self.strategy = strategy
         self.ascii_strategy = ascii_strategy
+
+        # Homoglyphs must be initialized by any alphabet for correct work
+        if not categories and not languages and not alphabet:
+            categories = ('LATIN', 'COMMON')
 
         # cats and langs
         self.categories = set(categories or [])

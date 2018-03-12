@@ -84,12 +84,12 @@ homoglyphs.get_combinations('гы')
 # ['rы', 'гы', 'ꭇы', 'ꭈы', '𝐫ы', '𝑟ы', '𝒓ы', '𝓇ы', '𝓻ы', '𝔯ы', '𝕣ы', '𝖗ы', '𝗋ы', '𝗿ы', '𝘳ы', '𝙧ы', '𝚛ы']
 
 # load alphabet on init by languages
-homoglyphs = hg.Homoglyphs(categories=None, languages={'ru', 'en'})  # alphabet will be loaded here
+homoglyphs = hg.Homoglyphs(languages={'ru', 'en'})  # alphabet will be loaded here
 homoglyphs.get_combinations('гы')
 # ['rы', 'гы']
 
 # load alphabet by demand
-homoglyphs = hg.Homoglyphs(categories=None, languages={'en'}, strategy=hg.STRATEGY_LOAD)
+homoglyphs = hg.Homoglyphs(languages={'en'}, strategy=hg.STRATEGY_LOAD)
 # ^ alphabet will be loaded here for "en" language
 homoglyphs.get_combinations('гы')
 # ^ alphabet will be loaded here for "ru" language
@@ -99,7 +99,7 @@ homoglyphs.get_combinations('гы')
 ### Converting glyphs to ASCII chars
 
 ```python
-homoglyphs = hg.Homoglyphs(categories=None, languages={'en'}, strategy=hg.STRATEGY_LOAD)
+homoglyphs = hg.Homoglyphs(languages={'en'}, strategy=hg.STRATEGY_LOAD)
 
 # convert
 homoglyphs.to_ascii('тест')
@@ -113,7 +113,6 @@ homoglyphs.to_ascii('лол')
 
 # you can set strategy for removing not converted non-ASCII chars from result
 homoglyphs = hg.Homoglyphs(
-    categories=None,
     languages={'en'},
     strategy=hg.STRATEGY_LOAD,
     ascii_strategy=hg.STRATEGY_REMOVE,
@@ -121,4 +120,3 @@ homoglyphs = hg.Homoglyphs(
 homoglyphs.to_ascii('лол')
 # ['o']
 ```
-
