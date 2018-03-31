@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='homoglyphs',
-    version='1.2.0',
+    version='1.2.2',
 
     author='orsinium',
     author_email='master_fess@mail.ru',
@@ -16,6 +16,7 @@ setup(
     keywords='homoglyphs ascii utf8 text homoglyph similar letters',
 
     packages=['homoglyphs'],
+    package_data={'': ['*.json']},
     requires=['python (>= 2.7)'],
 
     url='https://github.com/orsinium/homoglyphs',
