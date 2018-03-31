@@ -1,5 +1,7 @@
 # Homoglyphs
 
+![Homoglyphs logo](logo.png)
+
 Homoglyphs -- python library for getting [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) and converting to ASCII.
 
 
