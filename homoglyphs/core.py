@@ -58,8 +58,8 @@ class Categories(object):
         alphabet = set()
         for start, end in cls._get_ranges(categories):
             chars = (chr(code) for code in range(start, end))
-            alphabet.update(set(chars))
-        return set(alphabet)
+            alphabet.update(chars)
+        return alphabet
 
     @classmethod
     def detect(cls, char):
