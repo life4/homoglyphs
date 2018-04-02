@@ -73,7 +73,7 @@ hg.Categories.get_alphabet(['CYRILLIC'])
 Get homoglyphs:
 
 ```python
-# get latin combinations (by default initiated only latin alphabet)
+# get homoglyphs (latin alphabet initialized by default)
 hg.Homoglyphs().get_combinations('q')
 # ['q', '𝐪', '𝑞', '𝒒', '𝓆', '𝓺', '𝔮', '𝕢', '𝖖', '𝗊', '𝗾', '𝘲', '𝙦', '𝚚']
 ```
