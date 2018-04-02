@@ -8,13 +8,11 @@ Homoglyphs -- python library for getting [homoglyphs](https://en.wikipedia.org/w
 
 ## Features
 
-It's like [confusable_homoglyphs](https://github.com/vhf/confusable_homoglyphs) but with some features:
+It's smarter version of [confusable_homoglyphs](https://github.com/vhf/confusable_homoglyphs):
 
-* Load only needed alphabet to memory.
-* Work as quick as possible.
+* Autodect or manual choosing category ([aliases from ISO 15924](https://en.wikipedia.org/wiki/ISO_15924#List_of_codes)).
+* Auto or manual load only needed alphabets in memory.
 * Converting to ASCII.
-* Language management (detect language, get alphabet for language).
-* Alphabet categories management (detect category, get alphabet for category).
 * More configurable.
 * More stable.
 
@@ -73,7 +71,7 @@ hg.Categories.get_alphabet(['CYRILLIC'])
 Get homoglyphs:
 
 ```python
-# get latin combinations (by default initiated only latin alphabet)
+# get latin combinations (latin alphabet initialized by default)
 hg.Homoglyphs().get_combinations('q')
 # ['q', '𝐪', '𝑞', '𝒒', '𝓆', '𝓺', '𝔮', '𝕢', '𝖖', '𝗊', '𝗾', '𝘲', '𝙦', '𝚚']
 ```
@@ -82,7 +80,7 @@ Alphabet loading:
 
 ```python
 # load alphabet on init by categories
-homoglyphs = hg.Homoglyphs(categories=('LATIN', 'COMMON', 'CYRILLIC'))  # alphabet will be loaded here
+homoglyphs = hg.Homoglyphs(categories=('LATIN', 'COMMON', 'CYRILLIC'))  # alphabet loaded here
 homoglyphs.get_combinations('гы')
 # ['rы', 'гы', 'ꭇы', 'ꭈы', '𝐫ы', '𝑟ы', '𝒓ы', '𝓇ы', '𝓻ы', '𝔯ы', '𝕣ы', '𝖗ы', '𝗋ы', '𝗿ы', '𝘳ы', '𝙧ы', '𝚛ы']
 
@@ -96,7 +94,7 @@ homoglyphs = hg.Homoglyphs(alphabet='abc абс')
 homoglyphs.get_combinations('с')
 # ['c', 'с']
 
-# load alphabet by demand
+# load alphabet on demand
 homoglyphs = hg.Homoglyphs(languages={'en'}, strategy=hg.STRATEGY_LOAD)
 # ^ alphabet will be loaded here for "en" language
 homoglyphs.get_combinations('гы')
