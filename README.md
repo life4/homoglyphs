@@ -1,6 +1,7 @@
 # Homoglyphs
 
 ![Homoglyphs logo](logo.png)
+[![Build Status](https://travis-ci.org/orsinium/homoglyphs.svg?branch=master)](https://travis-ci.org/orsinium/homoglyphs) [![PyPI version](https://img.shields.io/pypi/v/homoglyphs.svg)](https://pypi.python.org/pypi/homoglyphs) [![Status](https://img.shields.io/pypi/status/homoglyphs.svg)](https://pypi.python.org/pypi/homoglyphs) [![Code size](https://img.shields.io/github/languages/code-size/orsinium/homoglyphs.svg)](https://github.com/orsinium/homoglyphs) [![License](https://img.shields.io/pypi/l/homoglyphs.svg)](LICENSE)
 
 Homoglyphs -- python library for getting [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph) and converting to ASCII.
 
