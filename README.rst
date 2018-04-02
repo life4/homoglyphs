@@ -1,6 +1,9 @@
 Homoglyphs
 ==========
 
+|Homoglyphs logo| |Build Status| |PyPI version| |Status| |Code size|
+|License|
+
 Homoglyphs -- python library for getting
 `homoglyphs <https://en.wikipedia.org/wiki/Homoglyph>`__ and converting
 to ASCII.
@@ -139,3 +142,15 @@ Converting glyphs to ASCII chars
     )
     homoglyphs.to_ascii('лол')
     # ['o']
+
+.. |Homoglyphs logo| image:: logo.png
+.. |Build Status| image:: https://travis-ci.org/orsinium/homoglyphs.svg?branch=master
+   :target: https://travis-ci.org/orsinium/homoglyphs
+.. |PyPI version| image:: https://img.shields.io/pypi/v/homoglyphs.svg
+   :target: https://pypi.python.org/pypi/homoglyphs
+.. |Status| image:: https://img.shields.io/pypi/status/homoglyphs.svg
+   :target: https://pypi.python.org/pypi/homoglyphs
+.. |Code size| image:: https://img.shields.io/github/languages/code-size/orsinium/homoglyphs.svg
+   :target: https://github.com/orsinium/homoglyphs
+.. |License| image:: https://img.shields.io/pypi/l/homoglyphs.svg
+   :target: LICENSE
