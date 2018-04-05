@@ -3,18 +3,12 @@ from collections import defaultdict
 import json
 from itertools import product
 import os
+import sys
 import unicodedata
 
-try:
-    xrange
-except NameError:
-    # python3
-    pass
-else:
-    # python2
+if sys.version_info[0] == 2:
     range = xrange  # noQA
-    chr = unichr    # noQA
-
+    chr = unichr  # noQA
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
