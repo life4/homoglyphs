@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from setuptools import setup
 
 
 setup(
     name='homoglyphs',
-    version='1.2.3',
+    version='1.2.4',
 
     author='orsinium',
     author_email='master_fess@mail.ru',
 
     description='Get homoglyphs for text, convert text to ASCII.',
-    long_description=open('README.rst').read(),
+    long_description=open('README.rst', 'rb').read().decode('utf-8'),
     keywords='homoglyphs ascii utf8 text homoglyph similar letters',
 
     packages=['homoglyphs'],
