@@ -143,14 +143,14 @@ class Homoglyphs(object):
 
     @staticmethod
     def get_table(alphabet):
-        table = defaultdict(list)
+        table = defaultdict(set)
         with open(os.path.join(CURRENT_DIR, 'confusables.json')) as f:
             data = json.load(f)
         for char in alphabet:
             if char in data:
                 for homoglyph in data[char]:
                     if homoglyph['c'] in alphabet:
-                        table[char].append(homoglyph['c'])
+                        table[char].add(homoglyph['c'])
         return table
 
     @staticmethod
@@ -189,14 +189,14 @@ class Homoglyphs(object):
                 return []
 
         # find alternative chars for current char
-        alt_chars = self.table.get(char, [])
+        alt_chars = self.table.get(char, set())
         if alt_chars:
             # find alternative chars for alternative chars for current char
-            alt_chars2 = [self.table.get(alt_char, []) for alt_char in alt_chars]
+            alt_chars2 = [self.table.get(alt_char, set()) for alt_char in alt_chars]
             # combine all alternatives
-            alt_chars.extend(sum(alt_chars2, []))
+            alt_chars.update(*alt_chars2)
         # add current char to alternatives
-        alt_chars.append(char)
+        alt_chars.add(char)
 
         if self.ascii_strategy == STRATEGY_REMOVE:
             alt_chars = [char for char in alt_chars if ord(char) < 256]
