@@ -80,6 +80,12 @@ class Categories(object):
             if point[0] <= code <= point[1]:
                 return data['iso_15924_aliases'][point[2]]
 
+    @classmethod
+    def get_all(cls):
+        with open(cls.fpath) as f:
+            data = json.load(f)
+        return set(data['iso_15924_aliases'])
+
 
 class Languages(object):
     fpath = os.path.join(CURRENT_DIR, 'languages.json')
@@ -112,6 +118,12 @@ class Languages(object):
             if char in alphabet:
                 languages.add(lang)
         return languages
+
+    @classmethod
+    def get_all(cls):
+        with open(cls.fpath) as f:
+            data = json.load(f)
+        return set(data.keys())
 
 
 class Homoglyphs(object):

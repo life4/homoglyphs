@@ -46,6 +46,10 @@ hg.Languages.detect('.')
 # get alphabet for languages
 hg.Languages.get_alphabet(['ru'])
 # {'в', 'Ё', 'К', 'Т', ..., 'Р', 'З', 'Э'}
+
+# get all languages
+hg.Languages.get_all()
+# {'nl', 'lt', ..., 'de', 'mk'}
 ```
 
 ### Categories
@@ -64,6 +68,10 @@ hg.Categories.detect('.')
 # get alphabet for categories
 hg.Categories.get_alphabet(['CYRILLIC'])
 # {'ӗ', 'Ԍ', 'Ґ', 'Я', ..., 'Э', 'ԕ', 'ӻ'}
+
+# get all categories
+hg.Categories.get_all()
+# {'RUNIC', 'DESERET', ..., 'SOGDIAN', 'TAI_LE'}
 ```
 
 ### Homoglyphs
