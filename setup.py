@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='homoglyphs',
-    version='1.2.5',
+    version='1.3.0',
 
     author='orsinium',
     author_email='master_fess@mail.ru',
