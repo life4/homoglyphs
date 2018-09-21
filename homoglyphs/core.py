@@ -51,7 +51,7 @@ class Categories(object):
         """
         alphabet = set()
         for start, end in cls._get_ranges(categories):
-            chars = (chr(code) for code in range(start, end))
+            chars = (chr(code) for code in range(start, end + 1))
             alphabet.update(chars)
         return alphabet
 
