@@ -15,6 +15,7 @@ class TestCommon(unittest.TestCase):
         self.assertEqual(Categories.detect('d'), 'LATIN')
         self.assertEqual(Categories.detect(u'Д'), 'CYRILLIC')
         self.assertEqual(Categories.detect('?'), 'COMMON')
+        self.assertEqual(Categories.detect(u'ㅡ'), 'HANGUL')
 
     def test_detect_language(self):
         self.assertIn('en', Languages.detect('d'))
@@ -36,6 +37,9 @@ class TestCommon(unittest.TestCase):
         self.assertGreater(len(alphabet), 50)
         self.assertLess(len(alphabet), 500)
 
+        alphabet = Categories.get_alphabet(['HANGUL'])
+        self.assertIn(u'ㅡ', alphabet)
+
     def test_get_alphabet_lang(self):
         alphabet = Languages.get_alphabet({'en'})
         self.assertIn('s', alphabet)
@@ -54,6 +58,10 @@ class TestCommon(unittest.TestCase):
         table = Homoglyphs.get_table(alphabet)
         self.assertIn('s', table)
         self.assertNotIn(CIRILLIC_ES, table)
+
+        alphabet = Categories.get_alphabet(['HANGUL'])
+        table = Homoglyphs.get_table(alphabet)
+        self.assertGreater(len(table[u'ㅡ']), 0)
 
     def test_get_char_variants(self):
         variants = Homoglyphs(['LATIN'])._get_char_variants('s')
