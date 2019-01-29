@@ -15,6 +15,7 @@ class TestCommon(unittest.TestCase):
         self.assertEqual(Categories.detect('d'), 'LATIN')
         self.assertEqual(Categories.detect(u'Д'), 'CYRILLIC')
         self.assertEqual(Categories.detect('?'), 'COMMON')
+        self.assertEqual(Categories.detect(u'ㅡ'), 'HANGUL')
 
     def test_detect_language(self):
         self.assertIn('en', Languages.detect('d'))
@@ -36,6 +37,9 @@ class TestCommon(unittest.TestCase):
         self.assertGreater(len(alphabet), 50)
         self.assertLess(len(alphabet), 500)
 
+        alphabet = Categories.get_alphabet(['HANGUL'])
+        self.assertIn(u'ㅡ', alphabet)
+
     def test_get_alphabet_lang(self):
         alphabet = Languages.get_alphabet({'en'})
         self.assertIn('s', alphabet)
@@ -54,6 +58,10 @@ class TestCommon(unittest.TestCase):
         table = Homoglyphs.get_table(alphabet)
         self.assertIn('s', table)
         self.assertNotIn(CIRILLIC_ES, table)
+
+        alphabet = Categories.get_alphabet(['HANGUL', 'COMMON'])
+        table = Homoglyphs.get_table(alphabet)
+        self.assertGreater(len(table[u'ㅡ']), 0)
 
     def test_get_char_variants(self):
         variants = Homoglyphs(['LATIN'])._get_char_variants('s')
@@ -88,14 +96,15 @@ class TestCommon(unittest.TestCase):
 
     def test_to_ascii(self):
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE)
-        self.assertEqual(ss, ['x', '×'])
+        self.assertEqual(ss, ['x', u'×'])
 
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE)
-        self.assertEqual(ss, ['x', '×'])
+        self.assertEqual(ss, ['x', u'×'])
 
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE + u'23.')
-        self.assertEqual(ss, ['x23.', '×23.'])
+        self.assertEqual(ss, ['x23.', u'×23.'])
 
+    def test_ascii_strategy(self):
         ss = Homoglyphs(
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
             ascii_strategy=STRATEGY_IGNORE,
@@ -106,7 +115,20 @@ class TestCommon(unittest.TestCase):
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
             ascii_strategy=STRATEGY_REMOVE,
         ).to_ascii(u'xхч2')
-        self.assertEqual(ss, ['xx2', 'x×2', '×x2', '××2'])
+        self.assertEqual(ss, ['xx2', u'x×2', u'×x2', u'××2'])
+
+        ss = Homoglyphs(
+            strategy=STRATEGY_LOAD,
+            ascii_strategy=STRATEGY_REMOVE,
+        ).to_ascii(u'ч')
+        self.assertEqual(ss, [])
+
+        # # This char hasn't been added yet :/
+        # ss = Homoglyphs(
+        #     strategy=STRATEGY_LOAD,
+        #     ascii_strategy=STRATEGY_REMOVE,
+        # ).to_ascii(u'ㅡ')
+        # self.assertEqual(ss, ['-'])
 
 
 if __name__ == '__main__':

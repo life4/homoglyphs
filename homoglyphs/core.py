@@ -33,14 +33,13 @@ class Categories(object):
         """
         with open(cls.fpath) as f:
             data = json.load(f)
-        indexes = []
+
         for category in categories:
-            try:
-                indexes.append(data['iso_15924_aliases'].index(category))
-            except ValueError:
+            if category not in data['aliases']:
                 raise ValueError('Invalid category: {}'.format(category))
-        for point in data['code_points_ranges']:
-            if point[2] in indexes:
+
+        for point in data['points']:
+            if point[2] in categories:
                 yield point[:2]
 
     @classmethod
@@ -71,20 +70,20 @@ class Categories(object):
             # In Python2 unicodedata.name raise error for non-unicode chars
             pass
         else:
-            if category in data['iso_15924_aliases']:
+            if category in data['aliases']:
                 return category
 
         # try detect category by ranges from JSON file.
         code = ord(char)
-        for point in data['code_points_ranges']:
+        for point in data['points']:
             if point[0] <= code <= point[1]:
-                return data['iso_15924_aliases'][point[2]]
+                return point[2]
 
     @classmethod
     def get_all(cls):
         with open(cls.fpath) as f:
             data = json.load(f)
-        return set(data['iso_15924_aliases'])
+        return set(data['aliases'])
 
 
 class Languages(object):
@@ -161,8 +160,8 @@ class Homoglyphs(object):
         for char in alphabet:
             if char in data:
                 for homoglyph in data[char]:
-                    if homoglyph['c'] in alphabet:
-                        table[char].add(homoglyph['c'])
+                    if homoglyph in alphabet:
+                        table[char].add(homoglyph)
         return table
 
     @staticmethod
@@ -222,8 +221,9 @@ class Homoglyphs(object):
             alt_chars = self._get_char_variants(char)
             if alt_chars:
                 variations.append(alt_chars)
-        for variant in product(*variations):
-            yield ''.join(variant)
+        if variations:
+            for variant in product(*variations):
+                yield ''.join(variant)
 
     def get_combinations(self, text):
         return list(self._get_combinations(text))
