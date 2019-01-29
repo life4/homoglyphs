@@ -235,12 +235,3 @@ class Homoglyphs(object):
 
     def to_ascii(self, text):
         return self.uniq_and_sort(self._to_ascii(text))
-
-
-
-if __name__ == '__main__':
-    hg_instance = Homoglyphs(categories=Categories.get_all(),
-                            strategy=STRATEGY_LOAD,
-                            ascii_strategy=STRATEGY_REMOVE)
-
-    hg_instance.to_ascii('ㅡ')
