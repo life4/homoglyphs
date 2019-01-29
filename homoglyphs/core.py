@@ -161,8 +161,8 @@ class Homoglyphs(object):
         for char in alphabet:
             if char in data:
                 for homoglyph in data[char]:
-                    if homoglyph['c'] in alphabet:
-                        table[char].add(homoglyph['c'])
+                    if homoglyph in alphabet:
+                        table[char].add(homoglyph)
         return table
 
     @staticmethod

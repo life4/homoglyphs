@@ -66,14 +66,8 @@ def generate_confusables():
         p = re.findall(match, line)
         if p:
             char1, char2, name1, name2 = p[0]
-            confusables_matrix[char1].append({
-                'c': char2,
-                'n': name2,
-            })
-            confusables_matrix[char2].append({
-                'c': char1,
-                'n': name1,
-            })
+            confusables_matrix[char1].append(char2)
+            confusables_matrix[char2].append(char1)
 
     with (path / 'confusables.json').open('w') as stream:
         stream.write(json.dumps(confusables_matrix, indent=2, sort_keys=True))
