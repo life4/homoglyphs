@@ -36,10 +36,10 @@ class Categories(object):
         indexes = []
         for category in categories:
             try:
-                indexes.append(data['iso_15924_aliases'].index(category))
+                indexes.append(data['aliases'].index(category))
             except ValueError:
                 raise ValueError('Invalid category: {}'.format(category))
-        for point in data['code_points_ranges']:
+        for point in data['points']:
             if point[2] in indexes:
                 yield point[:2]
 
@@ -71,20 +71,20 @@ class Categories(object):
             # In Python2 unicodedata.name raise error for non-unicode chars
             pass
         else:
-            if category in data['iso_15924_aliases']:
+            if category in data['aliases']:
                 return category
 
         # try detect category by ranges from JSON file.
         code = ord(char)
-        for point in data['code_points_ranges']:
+        for point in data['points']:
             if point[0] <= code <= point[1]:
-                return data['iso_15924_aliases'][point[2]]
+                return data['aliases'][point[2]]
 
     @classmethod
     def get_all(cls):
         with open(cls.fpath) as f:
             data = json.load(f)
-        return set(data['iso_15924_aliases'])
+        return set(data['aliases'])
 
 
 class Languages(object):

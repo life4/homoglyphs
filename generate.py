@@ -18,8 +18,8 @@ def generate_categories():
     """Generates the categories JSON data file from the unicode specification.
     """
     # inspired by https://gist.github.com/anonymous/2204527
-    code_points_ranges = []
-    iso_15924_aliases = []
+    points = []
+    aliases = []
     categories = []
 
     match = re.compile(r'([0-9A-F]+)(?:\.\.([0-9A-F]+))?\W+(\w+)\s*#\s*(\w+)',
@@ -32,21 +32,20 @@ def generate_categories():
         if p:
             code_point_range_from, code_point_range_to, alias, category = p[0]
             alias = alias.upper()
-            if alias not in iso_15924_aliases:
-                iso_15924_aliases.append(alias)
+            if alias not in aliases:
+                aliases.append(alias)
             if category not in categories:
                 categories.append(category)
-            code_points_ranges.append((
+            points.append((
                 int(code_point_range_from, 16),
                 int(code_point_range_to or code_point_range_from, 16),
-                iso_15924_aliases.index(alias), categories.index(category))
+                aliases.index(alias), categories.index(category))
             )
-    code_points_ranges.sort()
+    points.sort()
 
     categories_data = {
-        'iso_15924_aliases': iso_15924_aliases,
-        'categories': categories,
-        'code_points_ranges': code_points_ranges,
+        'aliases': aliases,
+        'points': points,
     }
 
     with (path / 'categories.json').open('w') as stream:
