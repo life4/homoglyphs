@@ -59,7 +59,7 @@ class TestCommon(unittest.TestCase):
         self.assertIn('s', table)
         self.assertNotIn(CIRILLIC_ES, table)
 
-        alphabet = Categories.get_alphabet(['HANGUL'])
+        alphabet = Categories.get_alphabet(['HANGUL', 'COMMON'])
         table = Homoglyphs.get_table(alphabet)
         self.assertGreater(len(table[u'ㅡ']), 0)
 
