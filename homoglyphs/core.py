@@ -222,8 +222,9 @@ class Homoglyphs(object):
             alt_chars = self._get_char_variants(char)
             if alt_chars:
                 variations.append(alt_chars)
-        for variant in product(*variations):
-            yield ''.join(variant)
+        if variations:
+            for variant in product(*variations):
+                yield ''.join(variant)
 
     def get_combinations(self, text):
         return list(self._get_combinations(text))
@@ -235,3 +236,12 @@ class Homoglyphs(object):
 
     def to_ascii(self, text):
         return self.uniq_and_sort(self._to_ascii(text))
+
+
+
+if __name__ == '__main__':
+    hg_instance = Homoglyphs(categories=Categories.get_all(),
+                            strategy=STRATEGY_LOAD,
+                            ascii_strategy=STRATEGY_REMOVE)
+
+    hg_instance.to_ascii('ㅡ')
