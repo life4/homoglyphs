@@ -96,6 +96,7 @@ class TestCommon(unittest.TestCase):
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE + u'23.')
         self.assertEqual(ss, ['x23.', '×23.'])
 
+    def test_ascii_strategy(self):
         ss = Homoglyphs(
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
             ascii_strategy=STRATEGY_IGNORE,
@@ -107,6 +108,19 @@ class TestCommon(unittest.TestCase):
             ascii_strategy=STRATEGY_REMOVE,
         ).to_ascii(u'xхч2')
         self.assertEqual(ss, ['xx2', 'x×2', '×x2', '××2'])
+
+        ss = Homoglyphs(
+            strategy=STRATEGY_LOAD,
+            ascii_strategy=STRATEGY_REMOVE,
+        ).to_ascii(u'ч')
+        self.assertEqual(ss, [])
+
+        # # This char hasn't been added yet :/
+        # ss = Homoglyphs(
+        #     strategy=STRATEGY_LOAD,
+        #     ascii_strategy=STRATEGY_REMOVE,
+        # ).to_ascii(u'ㅡ')
+        # self.assertEqual(ss, ['-'])
 
 
 if __name__ == '__main__':
