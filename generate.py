@@ -18,38 +18,29 @@ def generate_categories():
     """Generates the categories JSON data file from the unicode specification.
     """
     # inspired by https://gist.github.com/anonymous/2204527
-    points = []
-    aliases = []
-    categories = []
-
-    match = re.compile(r'([0-9A-F]+)(?:\.\.([0-9A-F]+))?\W+(\w+)\s*#\s*(\w+)',
+    match = re.compile(r'([0-9A-F]+)(?:\.\.([0-9A-F]+))?\W+(\w+)\s*#\s*\w+',
                        re.UNICODE)
 
     url = 'ftp://ftp.unicode.org/Public/UNIDATA/Scripts.txt'
-    file = urlopen(url).read().decode('utf-8').split('\n')
-    for line in file:
+    content = urlopen(url).read().decode('utf-8').split('\n')
+
+    points = []
+    aliases = set()
+    for line in content:
         p = re.findall(match, line)
         if p:
-            code_point_range_from, code_point_range_to, alias, category = p[0]
+            code_point_range_from, code_point_range_to, alias = p[0]
             alias = alias.upper()
-            if alias not in aliases:
-                aliases.append(alias)
-            if category not in categories:
-                categories.append(category)
+            aliases.add(alias)
             points.append((
                 int(code_point_range_from, 16),
                 int(code_point_range_to or code_point_range_from, 16),
-                aliases.index(alias), categories.index(category))
-            )
+                alias,
+            ))
     points.sort()
-
-    categories_data = {
-        'aliases': aliases,
-        'points': points,
-    }
-
     with (path / 'categories.json').open('w') as stream:
-        stream.write(json.dumps(categories_data, indent=2, sort_keys=True))
+        data = {'points': points, 'aliases': sorted(aliases)}
+        stream.write(json.dumps(data, indent=2, sort_keys=True))
 
 
 def generate_confusables():

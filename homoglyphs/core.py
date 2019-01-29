@@ -33,14 +33,13 @@ class Categories(object):
         """
         with open(cls.fpath) as f:
             data = json.load(f)
-        indexes = []
+
         for category in categories:
-            try:
-                indexes.append(data['aliases'].index(category))
-            except ValueError:
+            if category not in data['aliases']:
                 raise ValueError('Invalid category: {}'.format(category))
+
         for point in data['points']:
-            if point[2] in indexes:
+            if point[2] in categories:
                 yield point[:2]
 
     @classmethod
@@ -78,7 +77,7 @@ class Categories(object):
         code = ord(char)
         for point in data['points']:
             if point[0] <= code <= point[1]:
-                return data['aliases'][point[2]]
+                return point[2]
 
     @classmethod
     def get_all(cls):
