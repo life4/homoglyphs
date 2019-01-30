@@ -110,7 +110,11 @@ homoglyphs.get_combinations('гы')
 # ['rы', 'гы']
 ```
 
-You can combine `categories`, `languages`, `alphabet` and any strategies as you want.
+You can combine `categories`, `languages`, `alphabet` and any strategies as you want. The strategies specify how to handle any characters not already loaded:
+
+* `STRATEGY_LOAD`: load category for this character
+* `STRATEGY_IGNORE`: add character to result
+* `STRATEGY_REMOVE`: remove character from result
 
 
 ### Converting glyphs to ASCII chars
