@@ -24,12 +24,15 @@ It's smarter version of
 Installation
 ------------
 
-::
+.. code:: bash
 
     sudo pip install homoglyphs
 
 Usage
 -----
+
+Best way to explain something is show how it works. So, let's have a
+look on the real usage.
 
 Importing:
 
@@ -120,7 +123,12 @@ Alphabet loading:
     # ['rы', 'гы']
 
 You can combine ``categories``, ``languages``, ``alphabet`` and any
-strategies as you want.
+strategies as you want. The strategies specify how to handle any
+characters not already loaded:
+
+-  ``STRATEGY_LOAD``: load category for this character
+-  ``STRATEGY_IGNORE``: add character to result
+-  ``STRATEGY_REMOVE``: remove character from result
 
 Converting glyphs to ASCII chars
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -147,6 +155,18 @@ Converting glyphs to ASCII chars
     )
     homoglyphs.to_ascii('лол')
     # ['o']
+
+    # also you can set up range of allowed char codes for ascii (0-128 by default):
+    homoglyphs = hg.Homoglyphs(
+        languages={'en'},
+        strategy=hg.STRATEGY_LOAD,
+        ascii_strategy=hg.STRATEGY_REMOVE,
+        ascii_range=range(ord('a'), ord('z')),
+    )
+    homoglyphs.to_ascii('ХР123.')
+    # ['l']
+    homoglyphs.to_ascii('хр123.')
+    # ['xpl']
 
 .. |Homoglyphs logo| image:: logo.png
 .. |Build Status| image:: https://travis-ci.org/orsinium/homoglyphs.svg?branch=master
