@@ -96,12 +96,12 @@ class TestCommon(unittest.TestCase):
 
     def test_to_ascii(self):
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE)
-        self.assertEqual(ss, ['x', u'×'])
+        self.assertEqual(ss, ['x'])
 
         ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE)
-        self.assertEqual(ss, ['x', u'×'])
+        self.assertEqual(ss, ['x'])
 
-        ss = Homoglyphs(strategy=STRATEGY_LOAD).to_ascii(CIRILLIC_HE + u'23.')
+        ss = Homoglyphs(strategy=STRATEGY_LOAD, ascii_range=range(256)).to_ascii(CIRILLIC_HE + u'23.')
         self.assertEqual(ss, ['x23.', u'×23.'])
 
     def test_ascii_strategy(self):
@@ -114,6 +114,7 @@ class TestCommon(unittest.TestCase):
         ss = Homoglyphs(
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
             ascii_strategy=STRATEGY_REMOVE,
+            ascii_range=range(256),
         ).to_ascii(u'xхч2')
         self.assertEqual(ss, ['xx2', u'x×2', u'×x2', u'××2'])
 
