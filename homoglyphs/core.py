@@ -7,8 +7,8 @@ import sys
 import unicodedata
 
 if sys.version_info[0] == 2:
-    range = xrange  # noQA
-    chr = unichr  # noQA
+    range = xrange  # noQA: F821
+    chr = unichr  # noQA: F821
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,6 +16,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 STRATEGY_LOAD = 1       # load category for this char
 STRATEGY_IGNORE = 2     # add char to result
 STRATEGY_REMOVE = 3     # remove char from result
+
+ASCII_RANGE = range(128)
 
 
 class Categories(object):
@@ -127,12 +129,14 @@ class Languages(object):
 
 class Homoglyphs(object):
     def __init__(self, categories=None, languages=None, alphabet=None,
-                 strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE):
+                 strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE,
+                 ascii_range=ASCII_RANGE):
         # strategies
         if strategy not in (STRATEGY_LOAD, STRATEGY_IGNORE, STRATEGY_REMOVE):
             raise ValueError('Invalid strategy')
         self.strategy = strategy
         self.ascii_strategy = ascii_strategy
+        self.ascii_range = ascii_range
 
         # Homoglyphs must be initialized by any alphabet for correct work
         if not categories and not languages and not alphabet:
@@ -210,7 +214,7 @@ class Homoglyphs(object):
         alt_chars.add(char)
 
         if self.ascii_strategy == STRATEGY_REMOVE:
-            alt_chars = [char for char in alt_chars if ord(char) < 256]
+            alt_chars = [char for char in alt_chars if ord(char) in self.ascii_range]
 
         # uniq, sort and return
         return self.uniq_and_sort(alt_chars)
@@ -230,7 +234,7 @@ class Homoglyphs(object):
 
     def _to_ascii(self, text):
         for variant in self._get_combinations(text):
-            if max(map(ord, variant)) < 256:
+            if max(map(ord, variant)) in self.ascii_range:
                 yield variant
 
     def to_ascii(self, text):
