@@ -19,12 +19,14 @@ It's smarter version of [confusable_homoglyphs](https://github.com/vhf/confusabl
 
 ## Installation
 
-```
+```bash
 sudo pip install homoglyphs
 ```
 
 
 ## Usage
+
+Best way to explain something is show how it works. So, let's have a look on the real usage.
 
 Importing:
 
@@ -140,4 +142,16 @@ homoglyphs = hg.Homoglyphs(
 )
 homoglyphs.to_ascii('лол')
 # ['o']
+
+# also you can set up range of allowed char codes for ascii (0-128 by default):
+homoglyphs = hg.Homoglyphs(
+    languages={'en'},
+    strategy=hg.STRATEGY_LOAD,
+    ascii_strategy=hg.STRATEGY_REMOVE,
+    ascii_range=range(ord('a'), ord('z')),
+)
+homoglyphs.to_ascii('ХР123.')
+# ['l']
+homoglyphs.to_ascii('хр123.')
+# ['xpl']
 ```
