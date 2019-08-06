@@ -9,9 +9,9 @@ Homoglyphs
 
 # main package info
 __title__ = 'Homoglyphs'
-__version__ = '1.3.1'
+__version__ = '1.3.5'
 __author__ = 'Gram Orsinium'
-__license__ = 'LGPL 3.0'
+__license__ = 'MIT'
 
 
 # version synonym

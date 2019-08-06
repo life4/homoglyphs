@@ -1,0 +1,26 @@
+[tool.dephell.main]
+from = {format = "flit", path = "pyproject.toml"}
+to = {format = "setuppy", path = "setup.py"}
+
+[tool.flit]
+[tool.flit.metadata]
+module = "homoglyphs"
+author = "orsinium"
+author-email = "master_fess@mail.ru"
+home-page="https://github.com/life4/homoglyphs"
+license = "MIT"
+requires-python=">=2.7"
+description-file="README.md"
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
