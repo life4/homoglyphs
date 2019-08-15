@@ -125,8 +125,8 @@ You can combine `categories`, `languages`, `alphabet` and any strategies as you 
 homoglyphs = hg.Homoglyphs(languages={'en'}, strategy=hg.STRATEGY_LOAD)
 
 # convert
-homoglyphs.to_ascii('тест')
-# ['tect']
+homoglyphs.to_ascii('ТЕСТ')
+# ['TECT']
 homoglyphs.to_ascii('ХР123.')  # this is cyrillic "х" and "р"
 # ['XP123.', 'XPI23.', 'XPl23.']
 
