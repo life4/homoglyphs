@@ -48,23 +48,39 @@ def generate_confusables():
     """
     url = 'ftp://ftp.unicode.org/Public/security/latest/confusables.txt'
     file = urlopen(url).read().decode('utf-8').split('\n')
-    confusables_matrix = defaultdict(list)
-    rex = re.compile(r'[0-9A-F ]+\s+;\s*[0-9A-F ]+\s+;\s*\w+\s*#'
-                     r'\*?\s*\( (.+) → (.+) \) (.+) → (.+)\t#',
-                     re.UNICODE)
+    confusables_matrix = defaultdict(set)
+    rex = re.compile(
+        r'[0-9A-F ]+\s+;\s*[0-9A-F ]+\s+;\s*\w+\s*#'
+        r'\*?\s*\( (?P<char1>.+) → (?P<char2>.+) \) '
+        r'.+ → .+\t'
+        r'#',
+        # r'#(?:→(?P<steps>.+)→)',
+        re.UNICODE,
+    )
     for line in file:
-        match = re.findall(rex, line)
+        match = re.search(rex, line)
         if not match:
             continue
-        char1, char2, name1, name2 = match[0]
-        confusables_matrix[char1].append(char2)
-        confusables_matrix[char2].append(char1)
 
+        chars = []
+        chars.append(match.group('char1'))
+        # for char in match.group('steps'.split('→'):
+        #     if char:
+        #         chars.append(char)
+        chars.append(match.group('char2'))
+
+        for char1 in chars:
+            for char2 in chars:
+                if char1 == char2:
+                    continue
+                confusables_matrix[char1].add(char2)
+                confusables_matrix[char2].add(char1)
+
+    confusables_matrix = {char: sorted(table) for char, table in confusables_matrix.items()}
     with (path / 'confusables.json').open('w') as stream:
-        stream.write(
-            json.dumps(dict(confusables_matrix), indent=2, sort_keys=True))
+        stream.write(json.dumps(confusables_matrix, indent=2, sort_keys=True))
 
 
 if __name__ == '__main__':
-    generate_categories()
+    # generate_categories()
     generate_confusables()
