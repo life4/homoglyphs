@@ -53,8 +53,7 @@ def generate_confusables():
         r'[0-9A-F ]+\s+;\s*[0-9A-F ]+\s+;\s*\w+\s*#'
         r'\*?\s*\( (?P<char1>.+) → (?P<char2>.+) \) '
         r'.+ → .+\t'
-        r'#',
-        # r'#(?:→(?P<steps>.+)→)',
+        r'#(?:\s→(?P<steps>.+)→)?',
         re.UNICODE,
     )
     for line in file:
@@ -62,12 +61,10 @@ def generate_confusables():
         if not match:
             continue
 
-        chars = []
-        chars.append(match.group('char1'))
-        # for char in match.group('steps'.split('→'):
+        chars = {match.group('char1'), match.group('char2')}
+        # for char in (match.group('steps') or '').split('→'):
         #     if char:
-        #         chars.append(char)
-        chars.append(match.group('char2'))
+        #         chars.add(char)
 
         for char1 in chars:
             for char2 in chars:
