@@ -213,16 +213,19 @@ class Homoglyphs(object):
         # add current char to alternatives
         alt_chars.add(char)
 
-        if self.ascii_strategy == STRATEGY_REMOVE:
-            alt_chars = [char for char in alt_chars if ord(char) in self.ascii_range]
-
         # uniq, sort and return
         return self.uniq_and_sort(alt_chars)
 
-    def _get_combinations(self, text):
+    def _get_combinations(self, text, ascii=False):
         variations = []
         for char in text:
             alt_chars = self._get_char_variants(char)
+
+            if ascii:
+                alt_chars = [char for char in alt_chars if ord(char) in self.ascii_range]
+                if not alt_chars and self.ascii_strategy == STRATEGY_IGNORE:
+                    return
+
             if alt_chars:
                 variations.append(alt_chars)
         if variations:
@@ -233,7 +236,7 @@ class Homoglyphs(object):
         return list(self._get_combinations(text))
 
     def _to_ascii(self, text):
-        for variant in self._get_combinations(text):
+        for variant in self._get_combinations(text, ascii=True):
             if max(map(ord, variant)) in self.ascii_range:
                 yield variant
 
