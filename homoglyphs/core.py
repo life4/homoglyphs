@@ -3,12 +3,8 @@ from collections import defaultdict
 import json
 from itertools import product
 import os
-import sys
 import unicodedata
 
-if sys.version_info[0] == 2:
-    range = xrange  # noQA: F821
-    chr = unichr  # noQA: F821
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,7 +16,7 @@ STRATEGY_REMOVE = 3     # remove char from result
 ASCII_RANGE = range(128)
 
 
-class Categories(object):
+class Categories:
     """
     Work with aliases from ISO 15924.
     https://en.wikipedia.org/wiki/ISO_15924#List_of_codes
@@ -88,7 +84,7 @@ class Categories(object):
         return set(data['aliases'])
 
 
-class Languages(object):
+class Languages:
     fpath = os.path.join(CURRENT_DIR, 'languages.json')
 
     @classmethod
@@ -127,7 +123,7 @@ class Languages(object):
         return set(data.keys())
 
 
-class Homoglyphs(object):
+class Homoglyphs:
     def __init__(self, categories=None, languages=None, alphabet=None,
                  strategy=STRATEGY_IGNORE, ascii_strategy=STRATEGY_IGNORE,
                  ascii_range=ASCII_RANGE):
