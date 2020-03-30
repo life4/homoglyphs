@@ -104,6 +104,9 @@ class TestCommon(unittest.TestCase):
         ss = Homoglyphs(strategy=STRATEGY_LOAD, ascii_range=range(256)).to_ascii(CIRILLIC_HE + u'23.')
         self.assertEqual(ss, ['x23.', u'×23.'])
 
+        homoglyphs = Homoglyphs(languages={'en'}, strategy=STRATEGY_LOAD)
+        self.assertEqual(homoglyphs.to_ascii('ТЕСТ'), ['TECT'])
+
     def test_ascii_strategy(self):
         ss = Homoglyphs(
             categories=('LATIN', 'COMMON', 'CYRILLIC'),
