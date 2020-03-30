@@ -21,10 +21,10 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='homoglyphs',
-    version='1.3.5',
+    version='2.0.0',
     description='Homoglyphs',
-    python_requires='>=2.7',
-    project_urls={'homepage': 'https://github.com/life4/homoglyphs'},
+    python_requires='>=3.5',
+    project_urls={"homepage": "https://github.com/life4/homoglyphs"},
     author='orsinium',
     author_email='master_fess@mail.ru',
     license='MIT',
@@ -41,6 +41,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     packages=['homoglyphs'],
-    package_data={'homoglyphs': ['*.json']},
+    package_dir={"": "."},
+    package_data={"homoglyphs": ["*.json"]},
     install_requires=[],
 )
