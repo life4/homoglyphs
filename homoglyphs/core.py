@@ -93,7 +93,7 @@ class Languages:
         :return: set of chars in alphabet by languages list
         :rtype: set
         """
-        with open(cls.fpath) as f:
+        with open(cls.fpath, encoding='utf-8') as f:
             data = json.load(f)
         alphabet = set()
         for lang in languages:
