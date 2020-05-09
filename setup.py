@@ -21,7 +21,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='homoglyphs',
-    version='2.0.0',
+    version='2.0.2',
     description='Homoglyphs',
     python_requires='>=3.5',
     project_urls={"homepage": "https://github.com/life4/homoglyphs"},
