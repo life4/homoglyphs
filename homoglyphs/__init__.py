@@ -9,7 +9,7 @@ Homoglyphs
 
 # main package info
 __title__ = 'Homoglyphs'
-__version__ = '2.0.1'
+__version__ = '2.0.2'
 __author__ = 'Gram Orsinium'
 __license__ = 'MIT'
 
