@@ -118,7 +118,7 @@ class Languages:
 
     @classmethod
     def get_all(cls):
-        with open(cls.fpath) as f:
+        with open(cls.fpath, encoding='utf-8') as f:
             data = json.load(f)
         return set(data.keys())
 
