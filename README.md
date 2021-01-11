@@ -1,3 +1,9 @@
+# THE PROJECT IS ARCHIVED
+
+Forks: https://github.com/orsinium/forks
+
+---
+
 # Homoglyphs
 
 ![Homoglyphs logo](logo.png)
